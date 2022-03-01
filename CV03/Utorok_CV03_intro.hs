@@ -11,11 +11,14 @@ tab = ["ABCDE",
 -- nájdite všetky slová začínajúce A, končiace Y, ak môžeme ísť leb vpravo a dole
 -- koľko ich je
 slova :: Int -> Int -> [String]
-slova =   undefined
+slova 4 4 = ["Y"]
+slova i j |i > 4 || j > 4 = [] 
+          |otherwise =  map (tab!!i!!j :) (slova (i+1) j ++ slova i (j+1))
 
 -- skuste to prepisat do list comprehension, resp. do map
 slova' :: Int -> Int -> [String]
-slova' = undefined
+slova' 4 4 = ["Y"]
+slova' i j = [tab!!i!!j : w | w<- (slova (i+1) j) ++ (slova i (j+1))]
 
 -- kolko ich je ?
 

@@ -3,15 +3,20 @@ import Data.List
 
 -- definujte vlastnu analogiu pre zip
 zips :: [Int] -> [Int] -> [Int]
-zips = undefined
+zips [] [] = []
+zips _ [] = []
+zips [] _ = []
+zips (x:xs) (y:ys) =  [x,y] ++ (zips xs ys) -- x:y:zips xs ys 
 
 -- to iste pre tri zoznamy
 zips3 :: [Int] -> [Int] -> [Int] -> [Int]
 zips3 = undefined
 
 -- to iste, pre lubovolny pocet zoznamov
-zipsN :: [[Int]] -> [Int]
-zipsN = undefined
+zipsN :: [[t]] -> [[t]]
+zipsN [] = []
+zipsN ([]:_) = []
+zipsN xss = [ head xs | xs <- xss] : zipsN (map tail xss)
 
 -- to iste, pre lubovolny pocet zoznamov
 zipsN' :: [[Int]] -> [[Int]]
@@ -20,13 +25,17 @@ zipsN' = undefined
 
 -- a opacne, rozzipsovanie
 unzips :: [Int] -> ([Int], [Int])
-unzips = undefined
+unzips [] = ([],[])
+unzips (x:y:xs) = let (f, s) = unzips xs in (x:f,y:s)
+-- (x: f, y: s) where (f, s) = unzips xs
+
 
 unzips3 :: [Int] -> ([Int], [Int], [Int])
 unzips3 = undefined
 
 unzipsN :: [Int] -> Int -> [[Int]]
-unzipsN xs n = undefined
+unzipsN [] _ = []
+unzipsN xs n = take n xs : (unzipsN (drop n xs ) n)
 
 
 
