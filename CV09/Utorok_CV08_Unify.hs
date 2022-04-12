@@ -16,7 +16,14 @@ type Constraint = (Term, Term)       -- term1 == term2
 type Constraints = [Constraint]
 
 unify :: Constraints -> Maybe Constraints
-unify = undefined -- ... to do
+unify [] = Just []
+unify ((Functor f fargs, Functor g gargs) :cs) 
+                        | f == g && length fargs == length gargs = unify ([(fargs!!i, gargs!!i) | i <- [0.. (length fargs) - 1]] ++ cs)
+                        | otherwise = Nothing
+unify (x@(Var name, t)) : cs = if occurs name t then Nothing else unify (x : substitute name t cs)
+unify (x@(t, Var name)) : cs = if occurs name t then Nothing else unify (x : substitute name t cs)
+unify (CN i, CN j) : cs = if i==j then unify cs else Nothing
+unify x:cs = Nothing
 
 e1 = Functor "f" [ Var "X", Var "X" ]               -- f (x, x)
 e2 = Functor "f" [ CN 5,    Var "Y" ]               -- f (5, y)
@@ -40,7 +47,9 @@ ee = [
 -- unify [(e1, e6)] = Just [(x,g(z)),(z,7)]
 
 occurs :: String -> Term -> Bool
-occurs = undefined
+occurs x (Var name) = x == name
+occurs x (CN y) = False
+occurs x (Functor f fargs) = any (\farg -> occurs x farg) fargs
 -- occurs "x" e1
 -- occurs "y" e1
 
@@ -49,10 +58,10 @@ substitute = undefined
 -- substitute "x" (Var "y") e1
 
 substitute' :: String -> Term -> Constraint -> Constraint
-substitute' name t (c1, c2) = undefined
+substitute' name t (c1, c2) = (substitute name t c1, substitute name t c2)
 
 substitute'' :: String -> Term -> Constraints -> Constraints
-substitute'' name t cs = undefined
+substitute'' name t cs = map (\a -> substitute' name t a) cs
 
 -- prida prvok do Maybe List
 add2Maybe :: Constraint -> Maybe Constraints -> Maybe Constraints
